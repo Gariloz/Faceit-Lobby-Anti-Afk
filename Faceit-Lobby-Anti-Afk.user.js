@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Faceit Lobby Anti Afk
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Автоматически нажимает на кнопку "Keep open" в модальном окне FACEIT
 // @author       Gariloz
 // @match        https://*.faceit.com/*
