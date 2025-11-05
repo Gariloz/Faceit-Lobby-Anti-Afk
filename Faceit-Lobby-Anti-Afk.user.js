@@ -56,10 +56,13 @@
     const SELECTORS = {
         // Селекторы модального окна (новые и старые)
         MODAL_WRAPPERS: [
+            '[role="dialog"][data-dialog-type="MODAL"]', // Новейший селектор (2024)
+            '[role="dialog"]',                           // По роли dialog
             '.styles__ModalWrapper-sc-da82f9af-5',      // Новый селектор
             '.styles__ModalWrapper-sc-f26c4043-5',      // Старый селектор
             '[class*="ModalWrapper"]',                   // Универсальный
-            '[class*="Modal"]'                           // Резервный
+            '[class*="Modal"]',                          // Резервный
+            '[class*="Content__StyledContent"]'         // Новый класс контента
         ],
         
         // Селекторы кнопок
@@ -175,18 +178,27 @@
     function handleDOMChanges(mutations) {
         if (!isScriptActive) return; // Не работаем если скрипт неактивен
         
-        // Проверяем, появилось ли модальное окно
+                // Проверяем, появилось ли модальное окно
         for (const mutation of mutations) {
             if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                 // Быстрая проверка на появление модального окна
                 for (const node of mutation.addedNodes) {
                     if (node.nodeType === Node.ELEMENT_NODE) {
-                        if (node.matches && node.matches('[class*="Modal"]')) {
+                        // Проверяем новую структуру (role="dialog")
+                        if (node.matches && (
+                            node.matches('[role="dialog"]') ||
+                            node.matches('[class*="Modal"]') ||
+                            node.matches('[class*="Content__StyledContent"]')
+                        )) {
                             setTimeout(clickKeepOpenButton, 100);
                             return;
                         }
                         // Проверяем дочерние элементы
-                        const modal = node.querySelector && node.querySelector('[class*="Modal"]');
+                        const modal = node.querySelector && (
+                            node.querySelector('[role="dialog"]') ||
+                            node.querySelector('[class*="Modal"]') ||
+                            node.querySelector('[class*="Content__StyledContent"]')
+                        );
                         if (modal) {
                             setTimeout(clickKeepOpenButton, 100);
                             return;
